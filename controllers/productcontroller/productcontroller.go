@@ -21,21 +21,28 @@ func Index(c *gin.Context) {
 }
 
 func Show(c *gin.Context) {
+	// Mendeklarasikan variabel product untuk menyimpan data produk yang akan dicari
 	var product models.Product
 
+	// Mengambil parameter "id" dari URL request
 	id := c.Param("id")
 
+	// Mencari produk berdasarkan id menggunakan GORM
 	if err := models.DB.First(&product, id).Error; err != nil {
+		// Menangani error jika produk tidak ditemukan atau terjadi kesalahan lain
 		switch err {
 		case gorm.ErrRecordNotFound:
+			// Jika produk tidak ditemukan, kembalikan response 404 Not Found
 			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": "Product not found"})
 			return
 		default:
+			// Jika terjadi error lain (contoh: masalah koneksi database), kembalikan response 500 Internal Server Error
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 			return
 		}
 	}
 
+	// Jika produk ditemukan, kembalikan response 200 OK dengan data produk dalam format JSON
 	c.JSON(http.StatusOK, gin.H{"data": product})
 }
 
