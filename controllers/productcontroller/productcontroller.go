@@ -9,9 +9,14 @@ import (
 )
 
 func Index(c *gin.Context) {
+
+	// Mendeklarasikan slice untuk menyimpan data produk
 	var products []models.Product
 
+	// Mengambil semua data produk dari database menggunakan GORM
 	models.DB.Find(&products)
+
+	// Mengembalikan response JSON dengan status 200 OK, berisi data produk
 	c.JSON(http.StatusOK, gin.H{"data": products})
 }
 
